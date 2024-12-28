@@ -1,12 +1,13 @@
 import type {Dictionary} from 'lodash';
 
-import {readFileSync, statSync} from 'fs';
+import {readFileSync, realpathSync, statSync} from 'fs';
 import escapeRegExp from 'lodash/escapeRegExp';
 import {join, parse, relative, resolve, sep} from 'path';
 
 import liquidSnippet from './liquid';
 import {StateCore} from './typings';
 import {defaultTransformLink} from './utils';
+import {preprocess} from './preprocessors';
 
 const filesCache: Record<string, string> = {};
 
@@ -39,7 +40,12 @@ export type GetFileTokensOpts = {
     content?: string;
 };
 
-export function getFileTokens(path: string, state: StateCore, options: GetFileTokensOpts) {
+export function getFileTokens(
+    path: string,
+    state: StateCore,
+    options: GetFileTokensOpts,
+    content?: string,
+) {
     const {
         getVarsPerFile,
         vars,
@@ -51,7 +57,6 @@ export function getFileTokens(path: string, state: StateCore, options: GetFileTo
         inheritVars = true,
         conditionsInCode,
     } = options;
-    let {content} = options;
 
     const builtVars = (getVarsPerFile && !inheritVars ? getVarsPerFile(path) : vars) || {};
 
@@ -76,6 +81,9 @@ export function getFileTokens(path: string, state: StateCore, options: GetFileTo
         content = liquidResult.output;
         sourceMap = liquidResult.sourceMap;
     }
+
+    // Run preprocessor
+    content = preprocess(content, options);
 
     if (!disableLint && lintMarkdown) {
         lintMarkdown({
@@ -159,4 +167,12 @@ export function getRelativePath(path: string, toPath: string) {
     pathDirs.pop();
     const parentPath = pathDirs.join(sep);
     return relative(parentPath, toPath);
+}
+
+export function getRealPath(symlinkPath: string): string {
+    try {
+        return realpathSync(symlinkPath);
+    } catch (err) {
+        return symlinkPath;
+    }
 }

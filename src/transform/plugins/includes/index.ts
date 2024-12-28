@@ -6,8 +6,8 @@ import {
     GetFileTokensOpts,
     getFileTokens,
     getFullIncludePath,
+    getRealPath,
     isFileExists,
-    resolveRelativePath,
 } from '../../utilsFS';
 import {findBlockTokens} from '../../utils';
 import {MarkdownItPluginCb, MarkdownItPluginOpts} from '../typings';
@@ -17,7 +17,9 @@ import {MarkdownItIncluded} from './types';
 const INCLUDE_REGEXP = /^{%\s*include\s*(notitle)?\s*\[(.+?)]\((.+?)\)\s*%}$/;
 
 function stripTitleTokens(tokens: Token[]) {
-    if (tokens[0].type === 'heading_open' && tokens[2].type === 'heading_close') {
+    const [open, _, close] = tokens;
+
+    if (open?.type === 'heading_open' && close?.type === 'heading_close') {
         tokens.splice(0, 3);
     }
 }
@@ -49,18 +51,9 @@ function unfoldIncludes(md: MarkdownItIncluded, state: StateCore, path: string, 
                 const [, keyword /* description */, , includePath] = match;
 
                 const fullIncludePath = getFullIncludePath(includePath, root, path);
-                const relativeIncludePath = resolveRelativePath(path, includePath);
 
-                // Check the existed included store and extract it
-                const included = md.included?.[relativeIncludePath];
-
-                let pathname = fullIncludePath;
-                let hash = '';
-                const hashIndex = fullIncludePath.lastIndexOf('#');
-                if (hashIndex > -1 && !isFileExists(pathname)) {
-                    pathname = fullIncludePath.slice(0, hashIndex);
-                    hash = fullIncludePath.slice(hashIndex + 1);
-                }
+                // Check the real path of the file in case of a symlink
+                let pathname = getRealPath(fullIncludePath);
 
                 if (!pathname.startsWith(root)) {
                     i++;
@@ -68,13 +61,21 @@ function unfoldIncludes(md: MarkdownItIncluded, state: StateCore, path: string, 
                     continue;
                 }
 
-                const fileTokens = getFileTokens(pathname, state, {
-                    ...options,
-                    content: included, // The content forces the function to use it instead of reading from the disk
-                });
+                let hash = '';
+                const hashIndex = fullIncludePath.lastIndexOf('#');
+                if (hashIndex > -1 && !isFileExists(pathname)) {
+                    pathname = fullIncludePath.slice(0, hashIndex);
+                    hash = fullIncludePath.slice(hashIndex + 1);
+                }
+
+                // Check the existed included store and extract it
+                const included = md.included?.[pathname];
+
+                const fileTokens = getFileTokens(pathname, state, options, included);
 
                 let includedTokens;
                 if (hash) {
+                    // TODO: add warning about missed block
                     includedTokens = findBlockTokens(fileTokens, hash);
                 } else {
                     includedTokens = fileTokens;

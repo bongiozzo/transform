@@ -5,14 +5,14 @@ import DefaultMarkdownIt from 'markdown-it';
 import attrs from 'markdown-it-attrs';
 
 import DefaultPlugins from './plugins';
-import DefaultPreprocessors from './preprocessors';
+import {preprocess} from './preprocessors';
 import {log} from './log';
 import makeHighlight from './highlight';
 import extractTitle from './title';
 import getHeadings from './headings';
 import sanitizeHtml from './sanitize';
 
-function initMarkdownit(options: OptionsType) {
+function initMarkdownIt(options: OptionsType) {
     const {
         allowHTML = false,
         linkify = false,
@@ -118,13 +118,10 @@ function initParser(
             needTitle,
             needFlatListHeadings = false,
             getPublicPath,
-            preprocessors = DefaultPreprocessors,
         } = options;
 
-        // Run input preprocessor
-        for (const preprocessor of preprocessors) {
-            input = preprocessor(input, pluginOptions, md);
-        }
+        // Run preprocessor
+        input = preprocess(input, pluginOptions, options, md);
 
         // Generate global href link
         const href = getPublicPath ? getPublicPath(options) : '';
@@ -168,8 +165,10 @@ function initCompiler(md: MarkdownIt, options: OptionsType, env: EnvType) {
         const html = md.renderer.render(tokens, md.options, env);
 
         // Sanitize the page
-        return needToSanitizeHtml ? sanitizeHtml(html, sanitizeOptions) : html;
+        return needToSanitizeHtml
+            ? sanitizeHtml(html, sanitizeOptions, {cssWhiteList: env.additionalOptionsCssWhiteList})
+            : html;
     };
 }
 
-export = initMarkdownit;
+export = initMarkdownIt;

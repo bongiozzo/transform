@@ -1,5 +1,105 @@
 # Changelog
 
+## [4.41.1](https://github.com/diplodoc-platform/transform/compare/v4.41.0...v4.41.1) (2024-12-25)
+
+
+### Bug Fixes
+
+* move ts-dedent to normal deps ([#593](https://github.com/diplodoc-platform/transform/issues/593)) ([5f277a1](https://github.com/diplodoc-platform/transform/commit/5f277a1f4164153a3d1008c91257bd5bd447286b))
+
+## [4.41.0](https://github.com/diplodoc-platform/transform/compare/v4.40.1...v4.41.0) (2024-12-18)
+
+
+### Features
+
+* bump cut plagin version ([76b4e7a](https://github.com/diplodoc-platform/transform/commit/76b4e7aab9def6b0ec88dc5494cff9e33f765b47))
+
+## [4.40.1](https://github.com/diplodoc-platform/transform/compare/v4.40.0...v4.40.1) (2024-12-18)
+
+
+### Bug Fixes
+
+* **BREAKING** refactor frontmatter API ([3cdecd9](https://github.com/diplodoc-platform/transform/commit/3cdecd94df2f16eb64519922579b8ad25962c6ad))
+
+## [4.40.0](https://github.com/diplodoc-platform/transform/compare/v4.39.0...v4.40.0) (2024-11-27)
+
+
+### Features
+
+* **deps:** update cut and file extensions ([#576](https://github.com/diplodoc-platform/transform/issues/576)) ([32dc5fb](https://github.com/diplodoc-platform/transform/commit/32dc5fbbd03a41694ef12203136daa03cb535a11))
+
+## [4.39.0](https://github.com/diplodoc-platform/transform/compare/v4.38.2...v4.39.0) (2024-11-20)
+
+
+### Features
+
+* bump cut-extension to v0.4.0 ([#575](https://github.com/diplodoc-platform/transform/issues/575)) ([9e2c732](https://github.com/diplodoc-platform/transform/commit/9e2c7321c0f95a13f4d0f14752d37816764a72af))
+* **file:** replaced own plugin with file-extension ([#572](https://github.com/diplodoc-platform/transform/issues/572)) ([9f209d6](https://github.com/diplodoc-platform/transform/commit/9f209d69a1bb551bd0755dd6b48f260ba6fdd540))
+
+## [4.38.2](https://github.com/diplodoc-platform/transform/compare/v4.38.1...v4.38.2) (2024-11-18)
+
+
+### Bug Fixes
+
+* Fix notitle includef for empty files ([39be5e4](https://github.com/diplodoc-platform/transform/commit/39be5e4ee096082dc45d46d02b5d1218e8bf5efd))
+
+## [4.38.1](https://github.com/diplodoc-platform/transform/compare/v4.38.0...v4.38.1) (2024-11-18)
+
+
+### Bug Fixes
+
+* looking for a title by all tokens and not just even ([a69f5e0](https://github.com/diplodoc-platform/transform/commit/a69f5e0f486a1e754ba3ce14b8694cacde1a850b))
+
+## [4.38.0](https://github.com/diplodoc-platform/transform/compare/v4.37.1...v4.38.0) (2024-11-15)
+
+
+### Features
+
+* **anchors:** remove unsupported chars from heading ids ([34c3f1b](https://github.com/diplodoc-platform/transform/commit/34c3f1b85f7577bf63c9a8ff2830673382643eb4))
+
+
+### Bug Fixes
+
+* **sanitize:** added error output ([c7870d9](https://github.com/diplodoc-platform/transform/commit/c7870d90e7054d13676245a97b805da4437dc71e))
+
+## [4.37.1](https://github.com/diplodoc-platform/transform/compare/v4.37.0...v4.37.1) (2024-11-15)
+
+
+### Bug Fixes
+
+* check real path for included file in case of symlink ([7096441](https://github.com/diplodoc-platform/transform/commit/70964418fb6387f6094ead328cc01900c0d4a80d))
+
+## [4.37.0](https://github.com/diplodoc-platform/transform/compare/v4.36.0...v4.37.0) (2024-11-13)
+
+
+### Features
+
+* replace relative path to path trace logic for included ([#556](https://github.com/diplodoc-platform/transform/issues/556)) ([a3d8f52](https://github.com/diplodoc-platform/transform/commit/a3d8f526f8acbbfcbb74cfa1021a538235f07524))
+
+## [4.36.0](https://github.com/diplodoc-platform/transform/compare/v4.35.0...v4.36.0) (2024-11-08)
+
+
+### Features
+
+* **imsize:** rework image styling to get more control ([#549](https://github.com/diplodoc-platform/transform/issues/549)) ([3036e6d](https://github.com/diplodoc-platform/transform/commit/3036e6d36183398fa6db4fce1556cab07b930cf7))
+
+
+### Bug Fixes
+
+* **code:** Add ability to disable SEO optimization for titles ([4f3f098](https://github.com/diplodoc-platform/transform/commit/4f3f098aeb5f14dbad62c99c440efaffe3977e3e))
+* **code:** Add ability to disable SEO optimization for titles ([c808d20](https://github.com/diplodoc-platform/transform/commit/c808d205fbacaf0f08d97cc9e0928e7168f7255e))
+* **code:** Add ability to disable SEO optimization for titles ([2682b6b](https://github.com/diplodoc-platform/transform/commit/2682b6bc412d3fd00e5784dbfc221e7b1544e144))
+* **code:** Fix Display Issues with Untitled Notes ([d8ad8a5](https://github.com/diplodoc-platform/transform/commit/d8ad8a5ec0084097ec4d86a11a7db141c092a0a7))
+* **code:** Fix Display Issues with Untitled Notes ([a053f4c](https://github.com/diplodoc-platform/transform/commit/a053f4ca90545fa16fa6f465e8a9d92b85d8fdb1))
+
+## [4.35.0](https://github.com/diplodoc-platform/transform/compare/v4.34.0...v4.35.0) (2024-11-06)
+
+
+### Features
+
+* support custom csp from transform ([0d670f4](https://github.com/diplodoc-platform/transform/commit/0d670f423f2f180d7867c1ac09ead3408188506c))
+* support video by url only ([3d2469d](https://github.com/diplodoc-platform/transform/commit/3d2469d6f3239f17e5ab5823312d573be67ecab1))
+
 ## [4.34.0](https://github.com/diplodoc-platform/transform/compare/v4.33.0...v4.34.0) (2024-10-22)
 
 

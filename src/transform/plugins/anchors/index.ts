@@ -3,13 +3,12 @@ import GithubSlugger from 'github-slugger';
 import StateCore from 'markdown-it/lib/rules_core/state_core';
 import Token from 'markdown-it/lib/token';
 import {escapeHtml} from 'markdown-it/lib/common/utils';
+import slugify from 'slugify';
 
 import {headingInfo} from '../../utils';
 import {MarkdownItPluginCb} from '../typings';
 
 import {CUSTOM_ID_EXCEPTION, CUSTOM_ID_REGEXP} from './constants';
-
-const slugify: (str: string, opts: {}) => string = require('slugify');
 
 function createLinkTokens(
     state: StateCore,
@@ -76,12 +75,14 @@ const removeCustomIds = (token: Token) => {
 interface Options {
     extractTitle?: boolean;
     supportGithubAnchors?: boolean;
+    disableCommonAnchors?: boolean;
     transformLink: (v: string) => string;
     getPublicPath?: (options: Options, v?: string) => string;
 }
 
 const index: MarkdownItPluginCb<Options> = (md, options) => {
-    const {extractTitle, path, log, supportGithubAnchors, getPublicPath} = options;
+    const {extractTitle, path, log, supportGithubAnchors, getPublicPath, disableCommonAnchors} =
+        options;
 
     const plugin = (state: StateCore) => {
         /* Do not use the plugin if it is included in the file */
@@ -125,7 +126,7 @@ const index: MarkdownItPluginCb<Options> = (md, options) => {
                 } else {
                     id = slugify(title, {
                         lower: true,
-                        remove: /[*+~.()'"!:@`ь?]/g,
+                        remove: /[^\w\s$_\-,;=/]+/g,
                     });
                     ghId = slugger.slug(title);
                 }
@@ -143,9 +144,16 @@ const index: MarkdownItPluginCb<Options> = (md, options) => {
                 const anchorTitle = removeCustomId(title).replace(/`/g, '');
                 allAnchorIds.forEach((customId) => {
                     const setId = id !== customId;
-                    const linkTokens = createLinkTokens(state, customId, anchorTitle, setId, href);
-
-                    inlineToken.children?.unshift(...linkTokens);
+                    if (!disableCommonAnchors) {
+                        const linkTokens = createLinkTokens(
+                            state,
+                            customId,
+                            anchorTitle,
+                            setId,
+                            href,
+                        );
+                        inlineToken.children?.unshift(...linkTokens);
+                    }
 
                     if (supportGithubAnchors) {
                         const ghLinkTokens = createLinkTokens(state, ghId, anchorTitle, true, href);

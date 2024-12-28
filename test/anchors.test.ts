@@ -121,6 +121,28 @@ describe('Anchors', () => {
         ).toMatchSnapshot();
     });
 
+    it('should add id for heading with allowed chars in fragment (RFC 3986) ', () => {
+        expect(
+            // heading contains all allowed chars in fragment (hash) in accordance with RFC 3986
+            html(dedent`
+                ## A-c~5%!$&(abc)*_+;xx,@=3/':b?b.b'
+
+                Content
+                `),
+        ).toMatchSnapshot();
+    });
+
+    it('should remove quotes from id', () => {
+        expect(
+            // heading contains all allowed chars in fragment (hash) in accordance with RFC 3986
+            html(dedent`
+                ## «Heading» “with” "quotes'
+
+                Content
+                `),
+        ).toMatchSnapshot();
+    });
+
     describe('with extract title', () => {
         const transformWithTitle = (text: string) => {
             const {
@@ -142,6 +164,36 @@ describe('Anchors', () => {
             `);
             expect(result[0]).toMatchSnapshot();
             expect(result[1]).toBe('Test');
+        });
+    });
+
+    describe('with disableCommonAnchors', () => {
+        it('should not add anchor links when disableCommonAnchors is true', () => {
+            const {
+                result: {html},
+            } = transform('## Test heading', {
+                plugins: [includes, anchors],
+                path: mocksPath,
+                root: dirname(mocksPath),
+                getPublicPath,
+                disableCommonAnchors: true,
+            });
+
+            expect(html).toEqual('<h2 id="test-heading">Test heading</h2>\n');
+        });
+
+        it('should not add anchor links for custom anchors when disableCommonAnchors is true', () => {
+            const {
+                result: {html},
+            } = transform('## Test heading {#custom-id}', {
+                plugins: [includes, anchors],
+                path: mocksPath,
+                root: dirname(mocksPath),
+                getPublicPath,
+                disableCommonAnchors: true,
+            });
+
+            expect(html).toEqual('<h2 id="custom-id">Test heading</h2>\n');
         });
     });
 });
